@@ -5,17 +5,27 @@ using UnityEngine;
 public class Reel : MonoBehaviour
 {
 
+    public int minRandomRange = 1; //chance factor roll minimum 
+    public int maxRandomRange = 60; //chance factor roll maximum
+    public int bnaChanceMax = 30; // any roll under this will be banana
+    public int strawChanceMax = 50; // under this & over banana will be strawberry
+
     public Transform resetPoint;
     public Transform startingPoint;
+
+    //Min & Max transforms to make sure the reel stops on a symbol
     public Vector3 minStrawPoint;
     public Vector3 maxStrawPoint;
     public Vector3 minBnaPoint;
-    public Vector3 maxBnaPoint;
-    public Vector3 minOrangePoint;
+    public Vector3 maxBnaPoint; 
+    public Vector3 minOrangePoint; 
     public Vector3 maxOrangePoint;
-    public Vector3 myTransform;
-    public bool spinning;
-    public float spinTimeLeft;
+    private Vector3 myTransform;
+
+    private bool spinning;
+
+    private float spinTimeLeft;
+    public float maxSpinTime = 1;
     public float chanceFactor;
 
     public Symbol pointScript;
@@ -38,11 +48,11 @@ public class Reel : MonoBehaviour
         }
 
         //watch for key press and set spin time
-        if (Input.GetKeyDown(KeyCode.Space) && spinTimeLeft <= 0 && pointScript.playerScore >= 20)
+        if (Input.GetKeyDown(KeyCode.Space) && spinTimeLeft <= 0 && pointScript.playerScore >= pointScript.betCost)
         {
-            pointScript.playerScore -= 20;
-            chanceFactor = Random.Range(1, 60);
-            spinTimeLeft = 1.0f;
+            pointScript.PayBetCost();
+            chanceFactor = Random.Range(minRandomRange, maxRandomRange);
+            spinTimeLeft = maxSpinTime;
             spinning = true;
         }
 
@@ -55,7 +65,7 @@ public class Reel : MonoBehaviour
     void Spin(float spinTime, float chanceFactor)
     {
         //Must run out spin time and reel must be at a valid point to stop
-        if (chanceFactor <= 30) //Highest chance: Banana
+        if (chanceFactor <= bnaChanceMax) //Highest chance: Banana
         {
             if (myTransform.y < resetPoint.position.y && spinning)
             {
@@ -72,7 +82,7 @@ public class Reel : MonoBehaviour
             }
         }
 
-        if (chanceFactor <= 50 && chanceFactor > 30) //Medium chance: Strawberry
+        if (chanceFactor <= strawChanceMax && chanceFactor > bnaChanceMax + 1) //Medium chance: Strawberry
         {
             if (myTransform.y < resetPoint.position.y && spinning)
             {
@@ -89,7 +99,7 @@ public class Reel : MonoBehaviour
             }
         }
 
-        if (chanceFactor <= 60 && chanceFactor > 50) //Lowest chance: Orange
+        if (chanceFactor <= maxRandomRange && chanceFactor > strawChanceMax + 1) //Lowest chance: Orange
         {
             if (myTransform.y < resetPoint.position.y && spinning)
             {

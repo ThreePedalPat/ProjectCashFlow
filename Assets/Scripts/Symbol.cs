@@ -8,6 +8,7 @@ public class Symbol : MonoBehaviour
     public int bnaScore = 10;
     public int strawScore = 20;
     public int orangeScore = 100;
+    public int betCost = 20;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +36,6 @@ public class Symbol : MonoBehaviour
     }
     public void PayBetCost()
     {
-        playerScore -= 20;
+        playerScore -= betCost;
     }
 }
